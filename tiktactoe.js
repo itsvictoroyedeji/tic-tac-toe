@@ -69,6 +69,7 @@ function Gameboard() {
   return { getBoard, dropMark, printBoard };
 }
 
+
 /* Box represents a square on the board. It can have one of:
 // 0: no mark is in the square
 // 1: Player One's mark,
@@ -88,9 +89,63 @@ function Box() {
   return { addMark, getValue }
 }
 
+
 /* GameController responsible for controlling the flow
 // and state of the game's turns. Plus who won the game.
 */
-function GameController() {
+function GameController(
+  playerOneName = "Player One", 
+  playerTwoName = "Player Two"
+) {
+  // Get gameboard's API objects
+  const board = Gameboard();
 
+  // Player's array of objects
+  const players = [
+    {
+      name: playerOneName,
+      mark: 'X',
+    },
+    {
+      name: playerTwoName,
+      mark: 'O',
+    }
+  ];
+
+  // List active player
+  let activePlayer = players[0];
+
+  const switchPlayerTurn = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+  }
+
+  // Closure function to protect 'activePlayer' variable
+  const getActivePlayer = () => activePlayer;
+
+  const printNewRound = () => {
+    board.printBoard();
+    console.log(`${getActivePlayer().name}'s turn (${getActivePlayer().mark})`);
+  }
+
+  // The actual gameplay round!
+  const playRound = (row, column) => {
+    // Drop mark for the current player (with message)
+    console.log(
+      `Adding ${getActivePlayer().name}'s mark into row ${row}, column ${column}...`
+    );
+    board.dropMark(row, column, getActivePlayer().mark);
+
+    // Check for winner logic with win message
+
+    // Switch player's turn
+    switchPlayerTurn();
+    printNewRound();
+  }
+
+  // Initial message of game 
+  printNewRound();
+
+  return { playRound, getActivePlayer };
 }
+
+const game = GameController();
