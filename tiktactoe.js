@@ -26,8 +26,8 @@
 // HAPPY CODING :)
 
 /* State of the board in rows and columns.
-// Each square holds a box.
-// We also expose a dropMark method to add Boxes to squares
+** Each square holds a box.
+** We also expose a dropMark method to add Boxes to squares
 */
 function Gameboard() {
   const rows = 3;
@@ -79,9 +79,9 @@ function Gameboard() {
 
 
 /* Box represents a square on the board. It can have one of:
-// 0: no mark is in the square
-// 1: Player One's mark,
-// 2: Player Two's mark
+** 0: no mark is in the square
+** 1: Player One's mark,
+** 2: Player Two's mark
 */
 function Box() {
   let value = 0;
@@ -99,7 +99,7 @@ function Box() {
 
 
 /* GameController responsible for controlling the flow
-// and state of the game's turns. Plus who won the game.
+** and state of the game's turns. Plus who won the game.
 */
 function GameController(
   playerOneName = "Player One", 
@@ -145,6 +145,7 @@ function GameController(
 
     // Check for Winning logic with win message
     const checkWinner = board.checkValues();
+    const winner = WinningMessage();
     
     // For same winning marks in a row (loop to check all rows)
     for (let i = 0; i < checkWinner.length; i++) {
@@ -152,14 +153,12 @@ function GameController(
       let checkWinnerRow = checkWinner[i];
       
       if (checkWinnerRow.join(" ") === 'X X X') {
-        console.log(`Boom! Player 1 won from row ${i}`);
+        winner.message(playerOneName);
         board.printBoard();
-        // winningMessage();
         return;
       } else if (checkWinnerRow.join(" ") === 'O O O') {
-        console.log(`Boom! Player 2 won from row ${i}`);
+        winner.message(playerTwoName);
         board.printBoard();
-        // winningMessage();
         return;
       };
     };
@@ -172,14 +171,12 @@ function GameController(
       let checkWinnerColumn = checkWinner.map(row => row[i]);
       
       if (checkWinnerColumn.join(" ") === 'X X X') {
-        console.log(`Boom! Player 1 won from column ${i}`);
+        winner.message(playerOneName);
         board.printBoard();
-        // winningMessage();
         return;
       } else if (checkWinnerColumn.join(" ") === 'O O O') {
-        console.log(`Boom! Player 2 won from column ${i}`);
+        winner.message(playerTwoName);
         board.printBoard();
-        // winningMessage();
         return;
       };
     };
@@ -194,14 +191,12 @@ function GameController(
     }
     console.log(checkWinnerDiagonally1);
     if (checkWinnerDiagonally1.join(" ") === 'X X X') {
-      console.log(`Boom! Player 1 won from diagonal 1`);
+      winner.message(playerOneName);
       board.printBoard();
-      // winningMessage();
       return;
     } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
-      console.log(`Boom! Player 2 won from diagonal 1`);
+      winner.message(playerTwoName);
       board.printBoard();
-      // winningMessage();
       return;
     };
 
@@ -213,17 +208,15 @@ function GameController(
         ); 
       };
     if (checkWinnerDiagonally2.join(" ") === 'X X X') {
-      console.log(`Boom! Player 1 won from diagonal 2`);
+      winner.message(playerOneName);
       board.printBoard();
-      // winningMessage();
       return;
     } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
-      console.log(`Boom! Player 2 won from diagonal 2`);
+      winner.message(playerTwoName);
       board.printBoard();
-      // winningMessage();
       return;
     }
-
+    
     // If no winner, switch player's turn
     switchPlayerTurn();
     printNewRound();
@@ -234,5 +227,24 @@ function GameController(
 
   return { playRound, getActivePlayer };
 }
+
+/*
+** Display winning message
+*/
+function WinningMessage() {
+  const message = (player) => {
+    console.log(`Boom! ${player} has won the game!`);
+    alert(`Boom! ${player} has won the game!`);
+    
+    let text = "Do you want to play another game?"
+    if (confirm(text) == true) {
+      // Message to restart game
+    } else {
+      return;
+    }
+  }
+
+  return { message };
+};
 
 const game = GameController();
