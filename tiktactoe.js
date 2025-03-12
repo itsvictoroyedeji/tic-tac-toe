@@ -143,14 +143,15 @@ function GameController(
     );
     board.dropMark(row, column, getActivePlayer().mark);
 
-    // Check for winner logic with win message
+    // Check for Winning logic with win message
     const checkWinner = board.checkValues();
     
-    // For same marks in a row (loop to check all rows)
+    // For same winning marks in a row (loop to check all rows)
     for (let i = 0; i < checkWinner.length; i++) {
       // Check each row
       let checkWinnerRow = checkWinner[i];
-
+      console.log(checkWinnerRow);
+      
       if (checkWinnerRow.join(" ") === 'X X X') {
         console.log(`Boom! Player 1 won from row ${i}`);
         board.printBoard();
@@ -164,28 +165,45 @@ function GameController(
       };
     };
 
-    // For same marks in a column (loop to check all columns)
+    // For same winning marks in a column (loop to check all columns)
     const boardColumn = checkWinner.map(row => row[0]);
 
     for (i = 0 ; i < boardColumn.length; i++) {
       // Check each column
-      let CheckWinnerColumn = checkWinner.map(row => row[i]);
-
-      if (CheckWinnerColumn.join(" ") === 'X X X') {
+      let checkWinnerColumn = checkWinner.map(row => row[i]);
+      console.log(checkWinnerColumn);
+      
+      if (checkWinnerColumn.join(" ") === 'X X X') {
         console.log(`Boom! Player 1 won from column ${i}`);
         board.printBoard();
         // winningMessage();
         return;
-      } else if (CheckWinnerColumn.join(" ") === 'O O O') {
+      } else if (checkWinnerColumn.join(" ") === 'O O O') {
         console.log(`Boom! Player 2 won from column ${i}`);
         board.printBoard();
         // winningMessage();
         return;
-      }
+      };
+    };
+
+    // For same winning marks diagonally
+    const  checkWinnerDiagonally1 = [];
+    for (let i = 0; i < checkWinner.length; i++) {
+      // Add each diagonal mark into array
+      checkWinnerDiagonally1.push(checkWinner[i][i]);  
     }
-    
-    // else if row player's mark is all o, player two wins
-    // else...switch player's turn
+    console.log(checkWinnerDiagonally1);
+    if (checkWinnerDiagonally1.join(" ") === 'X X X') {
+      console.log(`Boom! Player 1 won from diagonal 1`);
+      board.printBoard();
+      // winningMessage();
+      return;
+    } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
+      console.log(`Boom! Player 2 won from diagonal 1`);
+      board.printBoard();
+      // winningMessage();
+      return;
+    }
 
     // Switch player's turn
     switchPlayerTurn();
