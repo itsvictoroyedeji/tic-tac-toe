@@ -63,7 +63,7 @@ function Gameboard() {
   const printBoard = () => {
     const boardWithBoxValues = board.map((singleRow) => singleRow.map((box) => box.getValue()));
     
-    console.log(boardWithBoxValues);
+    console.table(boardWithBoxValues);
   };
 
   // Used to check winning values later
@@ -150,7 +150,6 @@ function GameController(
     for (let i = 0; i < checkWinner.length; i++) {
       // Check each row
       let checkWinnerRow = checkWinner[i];
-      console.log(checkWinnerRow);
       
       if (checkWinnerRow.join(" ") === 'X X X') {
         console.log(`Boom! Player 1 won from row ${i}`);
@@ -171,7 +170,6 @@ function GameController(
     for (i = 0 ; i < boardColumn.length; i++) {
       // Check each column
       let checkWinnerColumn = checkWinner.map(row => row[i]);
-      console.log(checkWinnerColumn);
       
       if (checkWinnerColumn.join(" ") === 'X X X') {
         console.log(`Boom! Player 1 won from column ${i}`);
@@ -187,7 +185,9 @@ function GameController(
     };
 
     // For same winning marks diagonally
-    const  checkWinnerDiagonally1 = [];
+
+    // First Diagonal Check (from top-left to bottom-right)
+    const checkWinnerDiagonally1 = [];
     for (let i = 0; i < checkWinner.length; i++) {
       // Add each diagonal mark into array
       checkWinnerDiagonally1.push(checkWinner[i][i]);  
@@ -203,9 +203,28 @@ function GameController(
       board.printBoard();
       // winningMessage();
       return;
+    };
+
+    // Second Diagonal Check (from top-right to bottom-left)
+    const checkWinnerDiagonally2 = [];
+    for (let i = 0; i < checkWinner.length; i++) {
+        checkWinnerDiagonally2.push(
+          checkWinner[i][(checkWinner.length - 1) - i]
+        ); 
+      };
+    if (checkWinnerDiagonally2.join(" ") === 'X X X') {
+      console.log(`Boom! Player 1 won from diagonal 2`);
+      board.printBoard();
+      // winningMessage();
+      return;
+    } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
+      console.log(`Boom! Player 2 won from diagonal 2`);
+      board.printBoard();
+      // winningMessage();
+      return;
     }
 
-    // Switch player's turn
+    // If no winner, switch player's turn
     switchPlayerTurn();
     printNewRound();
   }
@@ -214,10 +233,6 @@ function GameController(
   printNewRound();
 
   return { playRound, getActivePlayer };
-}
-
-function Winner() {
-  
 }
 
 const game = GameController();
