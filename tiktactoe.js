@@ -144,19 +144,45 @@ function GameController(
     board.dropMark(row, column, getActivePlayer().mark);
 
     // Check for winner logic with win message
-
-    const checkWinner = board.checkValues()
-
+    const checkWinner = board.checkValues();
+    
+    // For same marks in a row (loop to check all rows)
     for (let i = 0; i < checkWinner.length; i++) {
-      if (checkWinner[i].join(" ") === '0 X 0') {
+      // Check each row
+      let checkWinnerRow = checkWinner[i];
+
+      if (checkWinnerRow.join(" ") === 'X X X') {
         console.log(`Boom! Player 1 won from row ${i}`);
+        board.printBoard();
+        // winningMessage();
         return;
-      } else if (checkWinner[i].join(" ") === 'O O O') {
+      } else if (checkWinnerRow.join(" ") === 'O O O') {
         console.log(`Boom! Player 2 won from row ${i}`);
+        board.printBoard();
+        // winningMessage();
+        return;
+      };
+    };
+
+    // For same marks in a column (loop to check all columns)
+    const boardColumn = checkWinner.map(row => row[0]);
+
+    for (i = 0 ; i < boardColumn.length; i++) {
+      // Check each column
+      let CheckWinnerColumn = checkWinner.map(row => row[i]);
+
+      if (CheckWinnerColumn.join(" ") === 'X X X') {
+        console.log(`Boom! Player 1 won from column ${i}`);
+        board.printBoard();
+        // winningMessage();
+        return;
+      } else if (CheckWinnerColumn.join(" ") === 'O O O') {
+        console.log(`Boom! Player 2 won from column ${i}`);
+        board.printBoard();
+        // winningMessage();
         return;
       }
     }
-
     
     // else if row player's mark is all o, player two wins
     // else...switch player's turn
@@ -170,6 +196,10 @@ function GameController(
   printNewRound();
 
   return { playRound, getActivePlayer };
+}
+
+function Winner() {
+  
 }
 
 const game = GameController();
