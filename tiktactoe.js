@@ -30,8 +30,43 @@
 // We also expose a dropMark method to add Boxes to squares
 */
 function Gameboard() {
-
+  const rows = 3;
+  const cols = 3;
   const board = [];
+
+  // 2d array to represent state of the game's board.
+  for (let i = 0; i < rows; i++) {
+    board[i] = [];
+    for (let j = 0; j < cols; j++) {
+      board[i].push(Box());
+    }
+  }
+
+  // To get entire board for UI
+  const getBoard = () => board;
+
+  // Code to add a mark in a Box
+  const dropMark = (row, column, player) => {
+
+    // Find out if selected box is available
+    // (meaning box value is 0)
+    const availableBox = board[row][column].getValue() === 0 ? true : false;
+
+    // If box is not available, stop execution
+    if (!availableBox) return;
+
+    // Add Mark for the player
+    board[row][column].addMark(player);
+  };
+
+    // Print board for the console only. (not needed for UI)
+  const printBoard = () => {
+    const boardWithBoxValues = board.map((singleRow) => singleRow.map((box) => box.getValue()));
+    
+    console.log(boardWithBoxValues);
+  };
+
+  return { getBoard, dropMark, printBoard };
 }
 
 /* Box represents a square on the board. It can have one of:
@@ -40,7 +75,17 @@ function Gameboard() {
 // 2: Player Two's mark
 */
 function Box() {
+  let value = 0;
 
+  // Accept player's mark and change value of the Box
+  const addMark = (player) => {
+    value = player;
+  }
+
+  // Get current value of box
+  const getValue = () => value;
+
+  return { addMark, getValue }
 }
 
 /* GameController responsible for controlling the flow
