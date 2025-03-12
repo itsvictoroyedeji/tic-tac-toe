@@ -59,14 +59,22 @@ function Gameboard() {
     board[row][column].addMark(player);
   };
 
-    // Print board for the console only. (not needed for UI)
+  // Print board for the console only. (not needed for UI)
   const printBoard = () => {
     const boardWithBoxValues = board.map((singleRow) => singleRow.map((box) => box.getValue()));
     
     console.log(boardWithBoxValues);
   };
 
-  return { getBoard, dropMark, printBoard };
+  // Used to check winning values later
+  // Difference here is value is returned
+  const checkValues = () => {
+    const checkBoardValues = board.map((singleRow) => singleRow.map((box) => box.getValue()));
+
+    return checkBoardValues;
+  }
+
+  return { getBoard, dropMark, printBoard, checkValues };
 }
 
 
@@ -136,6 +144,22 @@ function GameController(
     board.dropMark(row, column, getActivePlayer().mark);
 
     // Check for winner logic with win message
+
+    const checkWinner = board.checkValues()
+
+    for (let i = 0; i < checkWinner.length; i++) {
+      if (checkWinner[i].join(" ") === '0 X 0') {
+        console.log(`Boom! Player 1 won from row ${i}`);
+        return;
+      } else if (checkWinner[i].join(" ") === 'O O O') {
+        console.log(`Boom! Player 2 won from row ${i}`);
+        return;
+      }
+    }
+
+    
+    // else if row player's mark is all o, player two wins
+    // else...switch player's turn
 
     // Switch player's turn
     switchPlayerTurn();
