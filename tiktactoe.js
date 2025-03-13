@@ -128,11 +128,14 @@ function GameController(
       
       if (checkWinnerRow.join(" ") === 'X X X') {
         board.printBoard();
-        winner.message(playerOneName);
+        // Add setTimeout to allow mark on screen
+        // (set at DisplayController().clickHandlerBoard()) before
+        // winner popup message appears.
+        setTimeout(() => {winner.message(playerOneName)}, 200);
         return;
       } else if (checkWinnerRow.join(" ") === 'O O O') {
         board.printBoard();
-        winner.message(playerTwoName);
+        setTimeout(() => {winner.message(playerTwoName)}, 200);
         return;
       };
     };
@@ -146,11 +149,11 @@ function GameController(
       
       if (checkWinnerColumn.join(" ") === 'X X X') {
         board.printBoard();
-        winner.message(playerOneName);
+        setTimeout(() => {winner.message(playerOneName)}, 200);
         return;
       } else if (checkWinnerColumn.join(" ") === 'O O O') {
         board.printBoard();
-        winner.message(playerTwoName);
+        setTimeout(() => {winner.message(playerTwoName)}, 200);
         return;
       };
     };
@@ -165,11 +168,11 @@ function GameController(
     };
     if (checkWinnerDiagonally1.join(" ") === 'X X X') {
       board.printBoard();
-      winner.message(playerOneName);
+      setTimeout(() => {winner.message(playerOneName)}, 200);
       return;
     } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
       board.printBoard();
-      winner.message(playerTwoName);
+      setTimeout(() => {winner.message(playerTwoName)}, 200);
       return;
     };
 
@@ -182,13 +185,13 @@ function GameController(
       };
     if (checkWinnerDiagonally2.join(" ") === 'X X X') {
       board.printBoard();
-      winner.message(playerOneName);
+      setTimeout(() => {winner.message(playerOneName)}, 200);
       return;
     } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
       board.printBoard();
-      winner.message(playerTwoName);
+      setTimeout(() => {winner.message(playerTwoName)}, 200);
       return;
-    }
+    };
     
     // If no winner, switch player's turn
     switchPlayerTurn();
