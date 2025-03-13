@@ -6,7 +6,7 @@
 function Gameboard() {
   const rows = 3;
   const cols = 3;
-  const board = [];
+  let board = [];
 
   // 2d array to represent state of the game's board.
   for (let i = 0; i < rows; i++) {
@@ -14,7 +14,7 @@ function Gameboard() {
     for (let j = 0; j < cols; j++) {
       board[i].push(Box());
     }
-  }
+  };
 
   // To get entire board for UI
   const getBoard = () => board;
@@ -116,7 +116,7 @@ function GameController(
       `Adding ${getActivePlayer().name}'s mark into row ${row}, column ${column}...`
     );
     board.dropMark(row, column, getActivePlayer().mark);
-
+    
     // Check for Winning logic with win message
     const checkWinner = board.checkValues();
     const winner = WinningMessage();
@@ -125,12 +125,12 @@ function GameController(
     for (let i = 0; i < checkWinner.length; i++) {
       // Check each row
       let checkWinnerRow = checkWinner[i];
-      
-      if (checkWinnerRow.join(" ") === 'X X X') {
+       if (checkWinnerRow.join(" ") === 'X X X') {
         board.printBoard();
         // Add setTimeout to allow mark on screen
         // (set at DisplayController().clickHandlerBoard()) before
         // winner popup message appears.
+        
         setTimeout(() => {winner.message(playerOneName)}, 200);
         return;
       } else if (checkWinnerRow.join(" ") === 'O O O') {
@@ -146,7 +146,6 @@ function GameController(
     for (i = 0 ; i < boardColumn.length; i++) {
       // Check each column
       let checkWinnerColumn = checkWinner.map(row => row[i]);
-      
       if (checkWinnerColumn.join(" ") === 'X X X') {
         board.printBoard();
         setTimeout(() => {winner.message(playerOneName)}, 200);
@@ -161,38 +160,44 @@ function GameController(
     // For same winning marks diagonally
 
     // First Diagonal Check (from top-left to bottom-right)
-    const checkWinnerDiagonally1 = [];
+    let checkWinnerDiagonally1 = [];
     for (let i = 0; i < checkWinner.length; i++) {
       // Add each diagonal mark into array
       checkWinnerDiagonally1.push(checkWinner[i][i]);  
     };
     if (checkWinnerDiagonally1.join(" ") === 'X X X') {
-      board.printBoard();
+      board.printBoard()
       setTimeout(() => {winner.message(playerOneName)}, 200);
+      checkWinnerDiagonally1 = [];
       return;
     } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
-      board.printBoard();
+      board.printBoard()
       setTimeout(() => {winner.message(playerTwoName)}, 200);
+      checkWinnerDiagonally1 = [];
       return;
     };
 
+ 
     // Second Diagonal Check (from top-right to bottom-left)
-    const checkWinnerDiagonally2 = [];
+    let checkWinnerDiagonally2 = [];
     for (let i = 0; i < checkWinner.length; i++) {
         checkWinnerDiagonally2.push(
           checkWinner[i][(checkWinner.length - 1) - i]
         ); 
       };
     if (checkWinnerDiagonally2.join(" ") === 'X X X') {
-      board.printBoard();
+      board.printBoard()
       setTimeout(() => {winner.message(playerOneName)}, 200);
-      return;
+      checkWinnerDiagonally2 = [];
+      return [];
     } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
-      board.printBoard();
+      board.printBoard()
       setTimeout(() => {winner.message(playerTwoName)}, 200);
+      checkWinnerDiagonally2 = [];
       return;
     };
-    
+
+        
     // If no winner, switch player's turn
     switchPlayerTurn();
     printNewRound();
@@ -218,10 +223,11 @@ function WinningMessage() {
     
     let text = "Do you want to play another game?"
     if (confirm(text) == true) {
-      // Message to restart game
+      // Refresh the page (temporary solution)
+      location.reload();
     } else {
       return;
-    }
+    };
   }
 
   return { message };
