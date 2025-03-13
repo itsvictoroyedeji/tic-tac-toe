@@ -71,6 +71,7 @@ function Box() {
   // Get current value of box
   const getValue = () => value;
 
+
   return { addMark, getValue }
 }
 
@@ -242,19 +243,28 @@ function WinningMessage() {
 */
 function DisplayController() {
 
-  // Entire GameController's API collected here (to retrieve game)
+  // Entire GameController's API collected here (to retrieve game). 
+  // Let's first initialize it. Declared in Welcome series
+  // at bottom.
   let game;
-
 
   // Add DOM references to gameboard and displaying the player's turn
   const playersTurnDiv = document.querySelector('.turn');
   const boardDiv = document.querySelector('.board');
+
+  const container = document.querySelector('.container');
+  const resetButton = document.createElement("button");
+  resetButton.classList.add("button", "reset-button");
+  resetButton.textContent = "Reset Game";
 
 
   // Main part of the DisplayController()
   const updateScreen = () => {
     // clears the board before a new round 
     boardDiv.textContent = "";
+
+    // Add reset button at button
+    container.appendChild(resetButton);
 
     // Get latest board version and player's turn
     const board = game.getBoard();
@@ -283,7 +293,6 @@ function DisplayController() {
     })
   };
 
-
   // Event listener for the board
   boardDiv.addEventListener("click", clickHandlerBoard);
 
@@ -300,21 +309,22 @@ function DisplayController() {
     updateScreen();
   };
 
+  // Welcome Series start button is here!
   Welcome().startButton.addEventListener("click", (e) => {
 
     let playerOne = prompt("Add Player One's name:", "Player One");
-
     let playerTwo = prompt("Add Player Two's name:", "Player Two");
 
     if (playerOne === null ) {
+      // "undefined" allows GameController() parameters
+      // to pass default values
       playerOne = undefined;
     }
-
     if (playerTwo === null ) {
       playerTwo = undefined;
     }
 
-    // Render Game Controller with players names
+    // Render Game Controller API with player's names
     game = GameController(playerOne, playerTwo);
 
     const welcomeBoard = document.querySelector('.welcome-board');
@@ -327,13 +337,30 @@ function DisplayController() {
   
   });
 
+  // Reset Game event listener button
+  resetButton.addEventListener('click', resetGame);
+  function resetGame() {
+    const text = "Are you sure you want to reset the game?"
+
+    if (confirm(text) === true) {
+      // Refresh the page (temporary solution)
+      location.reload();
+    } else {
+      return;
+    }
+  }
+
   // Don't return anything. Everything is encapsulated here.
 }
 
-
+/*
+** Create a Welcome screen to start game.
+*/
 function Welcome() {
   const container = document.querySelector('.container');
 
+  // Transparent Welcome element that has a message + button
+  // Layers on top of tic tac toe box
   const welcomeBoard = document.createElement('div');
   welcomeBoard.classList.add("welcome-board");
 
@@ -350,6 +377,8 @@ function Welcome() {
 
   container.appendChild(welcomeBoard);
 
+  // startButton will be used in DisplayController's
+  // event listener, so it will be available
   return { startButton };
 }
 
