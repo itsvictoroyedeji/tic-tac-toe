@@ -23,8 +23,8 @@ function Gameboard() {
   const dropMark = (row, column, player) => {
 
     // Find out if selected box is available
-    // (meaning box value is 0)
-    const availableBox = board[row][column].getValue() === 0 ? true : false;
+    // (meaning box value is blank)
+    const availableBox = board[row][column].getValue() === '' ? true : false;
 
     // If box is not available, stop execution
     if (!availableBox) return;
@@ -58,7 +58,7 @@ function Gameboard() {
 ** 2: Player Two's mark
 */
 function Box() {
-  let value = 0;
+  let value = '';
 
   // Accept player's mark and change value of the Box
   const addMark = (player) => {
@@ -127,12 +127,12 @@ function GameController(
       let checkWinnerRow = checkWinner[i];
       
       if (checkWinnerRow.join(" ") === 'X X X') {
-        winner.message(playerOneName);
         board.printBoard();
+        winner.message(playerOneName);
         return;
       } else if (checkWinnerRow.join(" ") === 'O O O') {
-        winner.message(playerTwoName);
         board.printBoard();
+        winner.message(playerTwoName);
         return;
       };
     };
@@ -145,12 +145,12 @@ function GameController(
       let checkWinnerColumn = checkWinner.map(row => row[i]);
       
       if (checkWinnerColumn.join(" ") === 'X X X') {
-        winner.message(playerOneName);
         board.printBoard();
+        winner.message(playerOneName);
         return;
       } else if (checkWinnerColumn.join(" ") === 'O O O') {
-        winner.message(playerTwoName);
         board.printBoard();
+        winner.message(playerTwoName);
         return;
       };
     };
@@ -162,15 +162,14 @@ function GameController(
     for (let i = 0; i < checkWinner.length; i++) {
       // Add each diagonal mark into array
       checkWinnerDiagonally1.push(checkWinner[i][i]);  
-    }
-    console.log(checkWinnerDiagonally1);
+    };
     if (checkWinnerDiagonally1.join(" ") === 'X X X') {
-      winner.message(playerOneName);
       board.printBoard();
+      winner.message(playerOneName);
       return;
     } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
-      winner.message(playerTwoName);
       board.printBoard();
+      winner.message(playerTwoName);
       return;
     };
 
@@ -182,12 +181,12 @@ function GameController(
         ); 
       };
     if (checkWinnerDiagonally2.join(" ") === 'X X X') {
-      winner.message(playerOneName);
       board.printBoard();
+      winner.message(playerOneName);
       return;
     } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
-      winner.message(playerTwoName);
       board.printBoard();
+      winner.message(playerTwoName);
       return;
     }
     
@@ -247,7 +246,7 @@ function DisplayController() {
     const activePlayer = game.getActivePlayer();
 
     // Display player's turn on screen
-    playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+    playersTurnDiv.textContent = `${activePlayer.name}'s turn (${activePlayer.mark})...`;
 
     // Render board squares on screen
     board.forEach((row, rowIndex) => {

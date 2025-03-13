@@ -99,8 +99,12 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 2rem;
+  font-size: 3rem;
   border: 1px solid grey;
   background: lightyellow;
   cursor: pointer;
+}
+
+.box:hover {
+  background: lightcyan;
 }
