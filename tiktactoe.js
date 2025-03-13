@@ -51,7 +51,12 @@ function Gameboard() {
     return checkBoardValues;
   }
 
-  return { getBoard, dropMark, printBoard, checkValues };
+  return { 
+    getBoard,
+    dropMark,
+    printBoard,
+    checkValues
+  };
 }
 
 
@@ -121,7 +126,7 @@ function GameController(
     );
     board.dropMark(row, column, getActivePlayer().mark);
     
-    // Check for Winning logic with win message
+    // Check WINNING LOGIC with win message
     const checkWinner = board.checkValues();
     const winner = WinningMessage();
     
@@ -131,10 +136,9 @@ function GameController(
       let checkWinnerRow = checkWinner[i];
        if (checkWinnerRow.join(" ") === 'X X X') {
         board.printBoard();
-        // Add setTimeout to allow mark on screen
+        // Add "setTimeout" to show winning mark on screen
         // (set at DisplayController().clickHandlerBoard()) before
         // winner popup message appears.
-        
         setTimeout(() => {winner.message(playerOneName)}, 200);
         return;
       } else if (checkWinnerRow.join(" ") === 'O O O') {
@@ -193,12 +197,34 @@ function GameController(
       board.printBoard()
       setTimeout(() => {winner.message(playerOneName)}, 200);
       checkWinnerDiagonally2 = [];
-      return [];
+      return;
     } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
       board.printBoard()
       setTimeout(() => {winner.message(playerTwoName)}, 200);
       checkWinnerDiagonally2 = [];
       return;
+    };
+
+    // Check if all boxes are filled (TIE GAME)
+    let checkAllBoxesFilled = [];
+    for (let i = 0; i < checkWinner.length; i++) {
+      for (let j = 0; j < checkWinner[i].length; j++) {
+        checkAllBoxesFilled.push(checkWinner[i][j]);
+      }
+    }
+
+    const noValue = '';
+    let tie;
+    if (!checkAllBoxesFilled.includes(noValue)) {
+      // setTimeout to allow final mark to show on screen
+      setTimeout(() => {
+         tie = confirm("Nobody won the game. Try again?")}, 200);
+
+      if (tie === true) {
+
+      }
+      checkAllBoxesFilled = [];
+
     };
 
         
@@ -252,6 +278,7 @@ function DisplayController() {
   const playersTurnDiv = document.querySelector('.turn');
   const boardDiv = document.querySelector('.board');
 
+  // Add DOM reference to container and create "Reset game" button
   const container = document.querySelector('.container');
   const resetButton = document.createElement("button");
   resetButton.classList.add("button", "reset-button");
