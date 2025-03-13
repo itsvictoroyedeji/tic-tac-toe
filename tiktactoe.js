@@ -1,29 +1,3 @@
-// RULES!
-
-// 1. Store the gameboard as an array inside of a Gameboard object
-// 2. Players are stored in objects, so...
-// 3. Get an object to control the flow of the game itself!
-// 4. Have little to no global code/variables - tuck most of them inside of factory functions/objects
-// 5. You need a single instance of the gameboard or the displayController, wrap the factory in an IIFE module so you it can't be reused to make more instances.
-// 6. Think where should each bit of logic reside? Each functionality should fit in the game, player, or gameboard objects. Put them in logical (smart) places. (BRAINSTORM HERE to make life easier later!)
-// 7. Look at this article for more info + an example on how to organize your application/structure your code/your approach: https://www.ayweb.dev/blog/building-a-house-from-the-inside-out
-// 8. Get a WORKING GAME in the console first.
-// 9. Include logic to check when game is over:
-  // a. Always check for all winning 3-in-a-rows and ties.
-// 10. Don't worry about DOM, HTML, CSS until game works!
-  // a. Don't worry about taking user input either.
-// 11. You can call functions and pass arguments (to them) to play the game yourself to check if everything works as intended.
-// 12. AFTER GAME WORKS in the console...create an object that handles the display/DOM logic.
-// 13. Write a function to render the contents of the "gameboard" array to the webpage.
-  // a. Just fill the gameboard array with X and O jut to see what's going on
-// 14. Write functions that allow players to add marks to a specific spot on the board by interacting w/ the right DOM elements
-  // a. Ex: Let players click on a board square to place their marker.
-  // b. Also write logic that keeps players from playing in spots already taken!
-// 15. Clean up (aka put final touches on) the interface to:
-  // a. Allow players to put their names.
-  // b. Include a button to start/restart the game
-// 16. And add a display element that shows the results upon game's end.
-// HAPPY CODING :)
 
 /* State of the board in rows and columns.
 ** Each square holds a box.
@@ -225,7 +199,11 @@ function GameController(
   // Initial message of game 
   printNewRound();
 
-  return { playRound, getActivePlayer };
+  return { 
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard
+  };
 }
 
 /*
@@ -247,4 +225,71 @@ function WinningMessage() {
   return { message };
 };
 
-const game = GameController();
+
+/*
+** Code to display game in the UI
+*/
+function DisplayController() {
+  // Entire GameController's API collected here (to retrieve game)
+  const game = GameController();
+
+  // Add DOM references to gameboard and displaying the player's turn
+  const playersTurnDiv = document.querySelector('.turn');
+  const boardDiv = document.querySelector('.board');
+
+  // Main part of the DisplayController()
+  const updateScreen = () => {
+    // clears the board before a new round 
+    boardDiv.textContent = "";
+
+    // Get latest board version and player's turn
+    const board = game.getBoard();
+    const activePlayer = game.getActivePlayer();
+
+    // Display player's turn on screen
+    playersTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+
+    // Render board squares on screen
+    board.forEach((row, rowIndex) => {
+      row.forEach((box, colIndex) => {
+        // Anything clickable is a 'button'
+        const boxButton = document.createElement('button');
+        boxButton.classList.add("box");
+
+        // Create a data-column attribute to identify column's 
+        // and row's index
+        // to make it easier to pass the "playRound" function
+        boxButton.dataset.row = rowIndex;
+        boxButton.dataset.column = colIndex;
+
+        boxButton.textContent = box.getValue();
+        
+        boardDiv.appendChild(boxButton);
+      })
+    })
+  };
+
+  // Event listener for the board
+  boardDiv.addEventListener("click", clickHandlerBoard);
+
+  function clickHandlerBoard(e) {
+    // Get Box Element that's clicked
+    const selectedRow = e.target.dataset.row;
+    const selectedColumn = e.target.dataset.column;
+
+    // If selected box is invalid, don't proceed
+    if (!selectedColumn && !selectedRow) return;
+
+    // PLAY THE ROUND from the GameController()...
+    game.playRound(selectedRow, selectedColumn);
+    updateScreen();
+  };
+
+  // Initial render
+  updateScreen();
+
+  // Don't return anything. Everything is encapsulated here.
+}
+
+// Display the game
+DisplayController();
