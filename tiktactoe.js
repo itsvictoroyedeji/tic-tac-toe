@@ -27,7 +27,10 @@ function Gameboard() {
     const availableBox = board[row][column].getValue() === '' ? true : false;
 
     // If box is not available, stop execution
-    if (!availableBox) return;
+    if (!availableBox) {
+      alert("You clicked on a box already set. You lost your turn :(");
+      return;
+    };
 
     // Add Mark for the player
     board[row][column].addMark(player);
