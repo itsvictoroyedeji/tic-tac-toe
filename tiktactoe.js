@@ -241,12 +241,15 @@ function WinningMessage() {
 ** Code to display game in the UI
 */
 function DisplayController() {
+
   // Entire GameController's API collected here (to retrieve game)
-  const game = GameController();
+  let game;
+
 
   // Add DOM references to gameboard and displaying the player's turn
   const playersTurnDiv = document.querySelector('.turn');
   const boardDiv = document.querySelector('.board');
+
 
   // Main part of the DisplayController()
   const updateScreen = () => {
@@ -280,6 +283,7 @@ function DisplayController() {
     })
   };
 
+
   // Event listener for the board
   boardDiv.addEventListener("click", clickHandlerBoard);
 
@@ -296,11 +300,58 @@ function DisplayController() {
     updateScreen();
   };
 
-  // Initial render
-  updateScreen();
+  Welcome().startButton.addEventListener("click", (e) => {
+
+    let playerOne = prompt("Add Player One's name:", "Player One");
+
+    let playerTwo = prompt("Add Player Two's name:", "Player Two");
+
+    if (playerOne === null ) {
+      playerOne = undefined;
+    }
+
+    if (playerTwo === null ) {
+      playerTwo = undefined;
+    }
+
+    // Render Game Controller with players names
+    game = GameController(playerOne, playerTwo);
+
+    const welcomeBoard = document.querySelector('.welcome-board');
+
+    // Remove Welcome elements
+    e.target.parentElement.parentElement.removeChild(welcomeBoard);
+
+    // Render game screen
+    updateScreen();
+  
+  });
 
   // Don't return anything. Everything is encapsulated here.
 }
 
-// Display the game
+
+function Welcome() {
+  const container = document.querySelector('.container');
+
+  const welcomeBoard = document.createElement('div');
+  welcomeBoard.classList.add("welcome-board");
+
+  const welcomeMessage = document.createElement('h2');
+  welcomeMessage.classList.add('welcome');
+  welcomeMessage.textContent = "Let's play Tic-Tac-Toe";
+
+  const startButton = document.createElement('button');
+  startButton.classList.add('button', 'start-button');
+  startButton.textContent = "Start Game";
+
+  welcomeBoard.appendChild(welcomeMessage);
+  welcomeBoard.appendChild(startButton);
+
+  container.appendChild(welcomeBoard);
+
+  return { startButton };
+}
+
+
 DisplayController();
