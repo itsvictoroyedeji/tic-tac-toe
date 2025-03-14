@@ -359,6 +359,12 @@ function DisplayController() {
     updateScreen();
   };
 
+  // No zoom on double-click of buttons
+  document.addEventListener('dblclick', function(event) {
+    event.preventDefault();
+  });
+  
+
   // Welcome Series start button is here!
   Welcome().startButton.addEventListener("click", (e) => {
 
