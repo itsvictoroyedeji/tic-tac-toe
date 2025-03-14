@@ -63,6 +63,8 @@ function Gameboard() {
     };
     
     console.log(board);
+
+    return board;
   }
 
   return { 
@@ -152,7 +154,7 @@ function GameController(
     const winningLogic = () => {
 
       const checkWinner = board.checkValues();
-      // const winner = WinningMessage();
+      const winner = WinningMessage();
       
       // For same winning marks in a row (loop to check all rows)
       for (let i = 0; i < checkWinner.length; i++) {
@@ -163,11 +165,11 @@ function GameController(
           // Add "setTimeout" to show winning mark on screen
           // (set at DisplayController().clickHandlerBoard()) before
           // winner popup message appears.
-          setTimeout(() => {DisplayController().winningMessage(playerOneName)}, 200);
+          setTimeout(() => {winner.message(playerOneName)}, 200);
           return;
         } else if (checkWinnerRow.join(" ") === 'O O O') {
           board.printBoard();
-          setTimeout(() => {winningMessage(playerTwoName)}, 200);
+          setTimeout(() => {winner.message(playerTwoName)}, 200);
           return;
         };
       };
@@ -180,11 +182,11 @@ function GameController(
         let checkWinnerColumn = checkWinner.map(row => row[i]);
         if (checkWinnerColumn.join(" ") === 'X X X') {
           board.printBoard();
-          setTimeout(() => {winningMessage(playerOneName)}, 200);
+          setTimeout(() => {winner.message(playerOneName)}, 200);
           return;
         } else if (checkWinnerColumn.join(" ") === 'O O O') {
           board.printBoard();
-          setTimeout(() => {winningMessage(playerTwoName)}, 200);
+          setTimeout(() => {winner.message(playerTwoName)}, 200);
           return;
         };
       };
@@ -199,12 +201,12 @@ function GameController(
       };
       if (checkWinnerDiagonally1.join(" ") === 'X X X') {
         board.printBoard()
-        setTimeout(() => {winningMessage(playerOneName)}, 200);
+        setTimeout(() => {winner.message(playerOneName)}, 200);
         checkWinnerDiagonally1 = [];
         return;
       } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
         board.printBoard()
-        setTimeout(() => {winningMessage(playerTwoName)}, 200);
+        setTimeout(() => {winner.message(playerTwoName)}, 200);
         checkWinnerDiagonally1 = [];
         return;
       };
@@ -221,12 +223,12 @@ function GameController(
         };
       if (checkWinnerDiagonally2.join(" ") === 'X X X') {
         board.printBoard()
-        setTimeout(() => {winningMessage(playerOneName)}, 200);
+        setTimeout(() => {winner.message(playerOneName)}, 200);
         checkWinnerDiagonally2 = [];
         return;
       } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
         board.printBoard()
-        setTimeout(() => {winningMessage(playerTwoName)}, 200);
+        setTimeout(() => {winner.message(playerTwoName)}, 200);
         checkWinnerDiagonally2 = [];
         return;
       };
@@ -241,15 +243,12 @@ function GameController(
         }
       };
       const noValue = '';
-      let tie;
+
       if (!checkAllBoxesFilled.includes(noValue)) {
         // setTimeout to allow final mark to show on screen
         setTimeout(() => {
-          tie = confirm("Nobody won the game. Try again?")}, 200);
+          alert("Nobody won the game. Click 'Reset Game' to play again.")}, 200);
 
-        if (tie === true) {
-
-        }
         checkAllBoxesFilled = [];
       };
 
@@ -297,7 +296,6 @@ function DisplayController() {
   resetButton.classList.add("button", "reset-button");
   resetButton.textContent = "Reset Game";
 
-
   // Main part of the DisplayController()
   const updateScreen = () => {
     // clears the board before a new round 
@@ -305,7 +303,7 @@ function DisplayController() {
 
     // Add reset button at button
     container.appendChild(resetButton);
-
+    
     // Get latest board version and player's turn
     const board = game.getBoard();
     const activePlayer = game.getActivePlayer();
@@ -380,49 +378,30 @@ function DisplayController() {
   // Reset Game event listener button
   resetButton.addEventListener('click', resetGame);
   function resetGame() {
-    const text = "Are you sure you want to reset the game?"
-
-    if (confirm(text) === true) {
-      // Refresh the page (temporary solution)
-      // location.reload();
-      game.resetBoard();
-      game.setActivePlayer();
-      game.printBoard();
-      updateScreen();
-    } else {
-      return;
-    }
+    // Reset Game controls
+    game.resetBoard();
+    game.setActivePlayer();
+    game.printBoard();
+    updateScreen();
   }
 
-  /*
-  ** Display winning message
-  */
-  
-  const winningMessage = (player) => {
-    console.log(`Boom! ${player} has won the game!`);
-    alert(`Boom! ${player} has won the game!`);
-    
-    
-    let text = "Do you want to play another game?"
-    if (confirm(text) == true) {
-      const board = Gameboard();
-      board.resetBoard();
-      game.setActivePlayer();
-      board.printBoard();
-      updateScreen();
-    } else {
-      return;
-    };
-
-  };
-
   // Don't return anything. Everything is encapsulated here.
-  return { updateScreen, winningMessage };
 }
 
+/*
+  ** Display winning message
+  */
+function WinningMessage() {
+  const message = (player) => {
+    console.log(`Boom! ${player} has won the game!`);
 
+    alert(`Boom! ${player} has won the game!\n\nClick "Reset Game" to play another game.`);
+    
+  };
 
+  return { message }
 
+}
 /*
 ** Create a Welcome screen to start game.
 */
