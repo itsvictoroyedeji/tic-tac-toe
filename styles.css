@@ -151,8 +151,10 @@ body {
   background-color: var(--button-hover-color);
 }
 
-.container > p {
+.container+p {
   font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1em;
 }
 
 a:link,
@@ -167,7 +169,8 @@ a:visited {
     padding-left: 1em;
     padding-right: 1em;
   }
-  .board {
+  .board,
+  .welcome-board {
     max-width: 100%;
     max-height: 100%;
     margin: 1em;
