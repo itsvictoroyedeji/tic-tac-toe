@@ -292,9 +292,18 @@ function DisplayController() {
 
   // Add DOM reference to container and create "Reset game" button
   const container = document.querySelector('.container');
+
+  // Container for the buttons
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("btn-container");
+
   const resetButton = document.createElement("button");
   resetButton.classList.add("button", "reset-button");
   resetButton.textContent = "Reset Game";
+
+  const startOverButton = document.createElement("button");
+  startOverButton.classList.add("button", "start-over-button");
+  startOverButton.textContent = "Start With New Players";
 
   // Main part of the DisplayController()
   const updateScreen = () => {
@@ -302,7 +311,10 @@ function DisplayController() {
     boardDiv.textContent = "";
 
     // Add reset button at button
-    container.appendChild(resetButton);
+    buttonContainer.appendChild(resetButton);
+    buttonContainer.appendChild(startOverButton);
+
+    container.appendChild(buttonContainer);
     
     // Get latest board version and player's turn
     const board = game.getBoard();
@@ -385,6 +397,20 @@ function DisplayController() {
     updateScreen();
   }
 
+  // Start Game Over event listener button
+  startOverButton.addEventListener('click', startWithNewPlayers);
+  function startWithNewPlayers() {
+    const text = "Are you sure you want to end this game?"
+
+    if (confirm(text) === true) {
+      // Reload page
+      location.reload();
+    } else {
+      return;
+    }
+
+  }
+
   // Don't return anything. Everything is encapsulated here.
 }
 
@@ -396,11 +422,9 @@ function WinningMessage() {
     console.log(`Boom! ${player} has won the game!`);
 
     alert(`Boom! ${player} has won the game!\n\nClick "Reset Game" to play another game.`);
-    
   };
 
   return { message }
-
 }
 /*
 ** Create a Welcome screen to start game.

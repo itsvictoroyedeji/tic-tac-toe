@@ -126,6 +126,12 @@ body {
   gap: 0.8em;
 }
 
+.btn-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+}
+
 .button {
   --button-color: black;
   border: 1px solid var(--button-color);
