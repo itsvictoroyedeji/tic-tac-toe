@@ -175,4 +175,8 @@ a:visited {
     max-height: 100%;
     margin: 1em;
   }
+  .box {
+    font-size: 2rem;
+    width: 100%;
+  }
 }
