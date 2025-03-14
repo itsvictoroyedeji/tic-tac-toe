@@ -51,11 +51,26 @@ function Gameboard() {
     return checkBoardValues;
   }
 
+  const resetBoard = () => {
+    board = [];
+
+    // 2d array to represent state of the game's board.
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < cols; j++) {
+        board[i].push(Box());
+      }
+    };
+    
+    console.log(board);
+  }
+
   return { 
     getBoard,
     dropMark,
     printBoard,
-    checkValues
+    checkValues,
+    resetBoard
   };
 }
 
@@ -113,6 +128,12 @@ function GameController(
   // Closure function to protect 'activePlayer' variable
   const getActivePlayer = () => activePlayer;
 
+  // Set active Player when game resets
+  const setActivePlayer = () => {
+    activePlayer = players[0];
+    console.log(activePlayer);
+  };
+
   const printNewRound = () => {
     board.printBoard();
     console.log(`${getActivePlayer().name}'s turn (${getActivePlayer().mark})`);
@@ -126,107 +147,116 @@ function GameController(
     );
     board.dropMark(row, column, getActivePlayer().mark);
     
+
     // Check WINNING LOGIC with win message
-    const checkWinner = board.checkValues();
-    const winner = WinningMessage();
-    
-    // For same winning marks in a row (loop to check all rows)
-    for (let i = 0; i < checkWinner.length; i++) {
-      // Check each row
-      let checkWinnerRow = checkWinner[i];
-       if (checkWinnerRow.join(" ") === 'X X X') {
-        board.printBoard();
-        // Add "setTimeout" to show winning mark on screen
-        // (set at DisplayController().clickHandlerBoard()) before
-        // winner popup message appears.
-        setTimeout(() => {winner.message(playerOneName)}, 200);
+    const winningLogic = () => {
+
+      const checkWinner = board.checkValues();
+      // const winner = WinningMessage();
+      
+      // For same winning marks in a row (loop to check all rows)
+      for (let i = 0; i < checkWinner.length; i++) {
+        // Check each row
+        let checkWinnerRow = checkWinner[i];
+        if (checkWinnerRow.join(" ") === 'X X X') {
+          board.printBoard();
+          // Add "setTimeout" to show winning mark on screen
+          // (set at DisplayController().clickHandlerBoard()) before
+          // winner popup message appears.
+          setTimeout(() => {DisplayController().winningMessage(playerOneName)}, 200);
+          return;
+        } else if (checkWinnerRow.join(" ") === 'O O O') {
+          board.printBoard();
+          setTimeout(() => {winningMessage(playerTwoName)}, 200);
+          return;
+        };
+      };
+
+      // For same winning marks in a column (loop to check all columns)
+      const boardColumn = checkWinner.map(row => row[0]);
+
+      for (i = 0 ; i < boardColumn.length; i++) {
+        // Check each column
+        let checkWinnerColumn = checkWinner.map(row => row[i]);
+        if (checkWinnerColumn.join(" ") === 'X X X') {
+          board.printBoard();
+          setTimeout(() => {winningMessage(playerOneName)}, 200);
+          return;
+        } else if (checkWinnerColumn.join(" ") === 'O O O') {
+          board.printBoard();
+          setTimeout(() => {winningMessage(playerTwoName)}, 200);
+          return;
+        };
+      };
+
+      // For same winning marks diagonally
+
+      // First Diagonal Check (from top-left to bottom-right)
+      let checkWinnerDiagonally1 = [];
+      for (let i = 0; i < checkWinner.length; i++) {
+        // Add each diagonal mark into array
+        checkWinnerDiagonally1.push(checkWinner[i][i]);  
+      };
+      if (checkWinnerDiagonally1.join(" ") === 'X X X') {
+        board.printBoard()
+        setTimeout(() => {winningMessage(playerOneName)}, 200);
+        checkWinnerDiagonally1 = [];
         return;
-      } else if (checkWinnerRow.join(" ") === 'O O O') {
-        board.printBoard();
-        setTimeout(() => {winner.message(playerTwoName)}, 200);
+      } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
+        board.printBoard()
+        setTimeout(() => {winningMessage(playerTwoName)}, 200);
+        checkWinnerDiagonally1 = [];
         return;
       };
-    };
 
-    // For same winning marks in a column (loop to check all columns)
-    const boardColumn = checkWinner.map(row => row[0]);
+      console.log(checkWinnerDiagonally1);
 
-    for (i = 0 ; i < boardColumn.length; i++) {
-      // Check each column
-      let checkWinnerColumn = checkWinner.map(row => row[i]);
-      if (checkWinnerColumn.join(" ") === 'X X X') {
-        board.printBoard();
-        setTimeout(() => {winner.message(playerOneName)}, 200);
+  
+      // Second Diagonal Check (from top-right to bottom-left)
+      let checkWinnerDiagonally2 = [];
+      for (let i = 0; i < checkWinner.length; i++) {
+          checkWinnerDiagonally2.push(
+            checkWinner[i][(checkWinner.length - 1) - i]
+          ); 
+        };
+      if (checkWinnerDiagonally2.join(" ") === 'X X X') {
+        board.printBoard()
+        setTimeout(() => {winningMessage(playerOneName)}, 200);
+        checkWinnerDiagonally2 = [];
         return;
-      } else if (checkWinnerColumn.join(" ") === 'O O O') {
-        board.printBoard();
-        setTimeout(() => {winner.message(playerTwoName)}, 200);
+      } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
+        board.printBoard()
+        setTimeout(() => {winningMessage(playerTwoName)}, 200);
+        checkWinnerDiagonally2 = [];
         return;
       };
-    };
 
-    // For same winning marks diagonally
+      console.log(checkWinnerDiagonally2);
 
-    // First Diagonal Check (from top-left to bottom-right)
-    let checkWinnerDiagonally1 = [];
-    for (let i = 0; i < checkWinner.length; i++) {
-      // Add each diagonal mark into array
-      checkWinnerDiagonally1.push(checkWinner[i][i]);  
-    };
-    if (checkWinnerDiagonally1.join(" ") === 'X X X') {
-      board.printBoard()
-      setTimeout(() => {winner.message(playerOneName)}, 200);
-      checkWinnerDiagonally1 = [];
-      return;
-    } else if (checkWinnerDiagonally1.join(" ") === 'O O O') {
-      board.printBoard()
-      setTimeout(() => {winner.message(playerTwoName)}, 200);
-      checkWinnerDiagonally1 = [];
-      return;
-    };
-
- 
-    // Second Diagonal Check (from top-right to bottom-left)
-    let checkWinnerDiagonally2 = [];
-    for (let i = 0; i < checkWinner.length; i++) {
-        checkWinnerDiagonally2.push(
-          checkWinner[i][(checkWinner.length - 1) - i]
-        ); 
+      // Check if all boxes are filled (TIE GAME)
+      let checkAllBoxesFilled = [];
+      for (let i = 0; i < checkWinner.length; i++) {
+        for (let j = 0; j < checkWinner[i].length; j++) {
+          checkAllBoxesFilled.push(checkWinner[i][j]);
+        }
       };
-    if (checkWinnerDiagonally2.join(" ") === 'X X X') {
-      board.printBoard()
-      setTimeout(() => {winner.message(playerOneName)}, 200);
-      checkWinnerDiagonally2 = [];
-      return;
-    } else if (checkWinnerDiagonally2.join(" ") === 'O O O') {
-      board.printBoard()
-      setTimeout(() => {winner.message(playerTwoName)}, 200);
-      checkWinnerDiagonally2 = [];
-      return;
-    };
+      const noValue = '';
+      let tie;
+      if (!checkAllBoxesFilled.includes(noValue)) {
+        // setTimeout to allow final mark to show on screen
+        setTimeout(() => {
+          tie = confirm("Nobody won the game. Try again?")}, 200);
 
-    // Check if all boxes are filled (TIE GAME)
-    let checkAllBoxesFilled = [];
-    for (let i = 0; i < checkWinner.length; i++) {
-      for (let j = 0; j < checkWinner[i].length; j++) {
-        checkAllBoxesFilled.push(checkWinner[i][j]);
-      }
+        if (tie === true) {
+
+        }
+        checkAllBoxesFilled = [];
+      };
+
+      console.log(checkAllBoxesFilled);
     }
 
-    const noValue = '';
-    let tie;
-    if (!checkAllBoxesFilled.includes(noValue)) {
-      // setTimeout to allow final mark to show on screen
-      setTimeout(() => {
-         tie = confirm("Nobody won the game. Try again?")}, 200);
-
-      if (tie === true) {
-
-      }
-      checkAllBoxesFilled = [];
-
-    };
-
+    winningLogic();
         
     // If no winner, switch player's turn
     switchPlayerTurn();
@@ -239,28 +269,11 @@ function GameController(
   return { 
     playRound,
     getActivePlayer,
-    getBoard: board.getBoard
+    setActivePlayer,
+    getBoard: board.getBoard,
+    printBoard: board.printBoard,
+    resetBoard: board.resetBoard
   };
-}
-
-/*
-** Display winning message
-*/
-function WinningMessage() {
-  const message = (player) => {
-    console.log(`Boom! ${player} has won the game!`);
-    alert(`Boom! ${player} has won the game!`);
-    
-    let text = "Do you want to play another game?"
-    if (confirm(text) == true) {
-      // Refresh the page (temporary solution)
-      location.reload();
-    } else {
-      return;
-    };
-  }
-
-  return { message };
 };
 
 
@@ -371,14 +384,44 @@ function DisplayController() {
 
     if (confirm(text) === true) {
       // Refresh the page (temporary solution)
-      location.reload();
+      // location.reload();
+      game.resetBoard();
+      game.setActivePlayer();
+      game.printBoard();
+      updateScreen();
     } else {
       return;
     }
   }
 
+  /*
+  ** Display winning message
+  */
+  
+  const winningMessage = (player) => {
+    console.log(`Boom! ${player} has won the game!`);
+    alert(`Boom! ${player} has won the game!`);
+    
+    
+    let text = "Do you want to play another game?"
+    if (confirm(text) == true) {
+      const board = Gameboard();
+      board.resetBoard();
+      game.setActivePlayer();
+      board.printBoard();
+      updateScreen();
+    } else {
+      return;
+    };
+
+  };
+
   // Don't return anything. Everything is encapsulated here.
+  return { updateScreen, winningMessage };
 }
+
+
+
 
 /*
 ** Create a Welcome screen to start game.
